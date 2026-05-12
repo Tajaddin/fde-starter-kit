@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fde-starter-kit"
+version = "0.1.0"
+description = "Five deploy-ready Anthropic-stack starter templates for Forward Deployed / Solutions Engineering demos: chat, RAG, agent, extract, classify."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Tajaddin Gafarov", email = "gafarovtajaddin@gmail.com"}]
+keywords = ["llm", "anthropic", "rag", "agent", "fde", "solutions-engineering", "starter", "template"]
+dependencies = [
+    "click>=8.1",
+    "pydantic>=2.6",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=0.39"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+fde-kit = "fde_kit.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

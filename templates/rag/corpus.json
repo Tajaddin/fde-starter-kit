@@ -1,0 +1,27 @@
+[
+  {
+    "id": "doc-1",
+    "title": "Remote work policy",
+    "text": "The engineering team operates remote-first. Employees may opt to come to the Tampa office on a flexible schedule. Mandatory in-office days are limited to quarterly planning weeks."
+  },
+  {
+    "id": "doc-2",
+    "title": "Hiring criteria",
+    "text": "We hire engineers based on demonstrated production experience, not on credentials. A portfolio of shipped projects is weighted higher than degrees or certifications."
+  },
+  {
+    "id": "doc-3",
+    "title": "Compensation philosophy",
+    "text": "Base salaries are benchmarked to the 75th percentile of comparable Tampa-area roles. Equity grants vest over four years with a one-year cliff."
+  },
+  {
+    "id": "doc-4",
+    "title": "Security review process",
+    "text": "All third-party SaaS tools require a security review by the platform team before being added to the company stack. Reviews typically complete within five business days."
+  },
+  {
+    "id": "doc-5",
+    "title": "On-call rotation",
+    "text": "The platform team runs a weekly on-call rotation. On-call engineers receive a stipend and are excused from non-urgent meetings during their week."
+  }
+]
