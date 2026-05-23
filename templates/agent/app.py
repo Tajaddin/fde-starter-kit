@@ -5,6 +5,7 @@ Run:  python app.py
 
 from __future__ import annotations
 
+import ast
 import json
 import operator
 import re
@@ -23,14 +24,43 @@ class Tool:
     fn: Callable[[str], str]
 
 
+# Whitelist of arithmetic operators. Any AST node outside this set
+# (names, calls, attribute access, comprehensions, ...) is rejected,
+# so the evaluator cannot be tricked into running arbitrary code.
+_ARITH_OPS: dict[type, Callable] = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+    ast.USub: operator.neg,
+    ast.UAdd: operator.pos,
+}
+
+
+def _eval_arith(node: ast.AST) -> int | float:
+    if isinstance(node, ast.Constant):
+        # bool is a subclass of int; exclude it so `True + 1` is rejected.
+        if isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
+            return node.value
+        raise ValueError(f"unsupported constant: {node.value!r}")
+    if isinstance(node, ast.BinOp) and type(node.op) in _ARITH_OPS:
+        return _ARITH_OPS[type(node.op)](_eval_arith(node.left), _eval_arith(node.right))
+    if isinstance(node, ast.UnaryOp) and type(node.op) in _ARITH_OPS:
+        return _ARITH_OPS[type(node.op)](_eval_arith(node.operand))
+    raise ValueError(f"unsupported expression node: {type(node).__name__}")
+
+
 def _calc(expr: str) -> str:
-    # Tiny safe calculator: numbers, +-*/(), no names.
-    if not re.fullmatch(r"[0-9+\-*/().\s]+", expr):
-        return "ERROR: only numbers and + - * / ( ) allowed"
+    # AST-walked arithmetic. Parses as an expression, then visits only
+    # number literals and + - * / unary +/-. No eval(), no exec().
     try:
-        return str(eval(expr, {"__builtins__": {}}, {}))  # noqa: S307
-    except Exception as exc:  # noqa: BLE001
+        tree = ast.parse(expr, mode="eval")
+        result = _eval_arith(tree.body)
+    except (SyntaxError, ValueError, ZeroDivisionError) as exc:
         return f"ERROR: {exc}"
+    if isinstance(result, float) and result.is_integer():
+        result = int(result)
+    return str(result)
 
 
 def _stub_search(query: str) -> str:
