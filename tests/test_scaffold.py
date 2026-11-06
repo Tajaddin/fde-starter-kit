@@ -35,6 +35,23 @@ def test_copy_template_unknown_slug_raises(tmp_path):
         copy_template("nonsense", tmp_path / "x")
 
 
+@pytest.mark.parametrize("slug", ["..", "../src", "chat/..", "chat/../rag", "", "."])
+def test_copy_template_rejects_slugs_outside_the_catalog(tmp_path, slug):
+    dest = tmp_path / "x"
+    with pytest.raises(ValueError):
+        copy_template(slug, dest)
+    assert not dest.exists()
+
+
+def test_copy_template_rejects_absolute_path_slug(tmp_path):
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "secret.txt").write_text("not a template")
+    with pytest.raises(ValueError):
+        copy_template(str(outside), tmp_path / "x")
+    assert not (tmp_path / "x").exists()
+
+
 def test_copy_template_refuses_nonempty_without_force(tmp_path):
     dest = tmp_path / "demo"
     dest.mkdir()

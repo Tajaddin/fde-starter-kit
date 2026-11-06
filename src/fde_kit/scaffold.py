@@ -72,10 +72,12 @@ def list_templates() -> list[TemplateSpec]:
 
 
 def copy_template(slug: str, dest_dir: str | Path, *, overwrite: bool = False) -> Path:
-    src = _templates_root() / slug
-    if not src.is_dir():
+    # Only catalog slugs: a slug is joined onto a path, so "..", "a/../b" or an
+    # absolute path would otherwise copy an arbitrary directory.
+    if slug not in {t.slug for t in TEMPLATES}:
         valid = ", ".join(t.slug for t in TEMPLATES)
         raise ValueError(f"unknown template {slug!r}; expected one of: {valid}")
+    src = _templates_root() / slug
     dest = Path(dest_dir)
     if dest.exists() and any(dest.iterdir()):
         if not overwrite:
