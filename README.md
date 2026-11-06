@@ -65,7 +65,7 @@ pytest -v
 
 ```
 tests/test_scaffold.py           13 passed   list, copy, unknown-slug, path-traversal slugs, refuse-nonempty, force-overwrite
-tests/test_cli.py                 6 passed   `fde-kit init` for every template, then runs the printed `python app.py`
+tests/test_cli.py                 6 passed   `fde-kit init` for every template, then runs the printed next step; unknown slug is a usage error
 tests/test_packaging.py           1 passed   the built wheel contains every template
 tests/test_backends.py            4 passed   default responder, call inspection, custom responder, token estimates
 tests/test_template_chat.py       3 passed   run_repl, history append, reset
