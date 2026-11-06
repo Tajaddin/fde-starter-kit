@@ -19,8 +19,8 @@ TEMPLATES: list[TemplateSpec] = [
         slug="chat",
         title="Conversational Chat",
         description=(
-            "Multi-turn chat agent with system prompt + conversation history. "
-            "FastAPI endpoint, CLI client, swappable backend."
+            "Multi-turn chat with system prompt + conversation history. "
+            "Terminal REPL, swappable backend."
         ),
     ),
     TemplateSpec(
@@ -51,8 +51,8 @@ TEMPLATES: list[TemplateSpec] = [
         slug="classify",
         title="Multi-Label Classification",
         description=(
-            "LLM-as-classifier with calibration: returns label + confidence + reasoning. "
-            "Includes a tiny eval harness."
+            "LLM-as-classifier: returns label + confidence (clipped to [0, 1]) + reasoning. "
+            "Includes a tiny eval harness that checks whether confidence tracks accuracy."
         ),
     ),
 ]

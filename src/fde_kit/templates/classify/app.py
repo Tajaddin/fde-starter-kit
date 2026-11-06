@@ -1,4 +1,4 @@
-"""LLM-as-classifier with calibrated confidence + tiny eval harness.
+"""LLM-as-classifier with model-reported confidence + tiny eval harness.
 
 Run:  python app.py
 """
