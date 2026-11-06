@@ -2,9 +2,12 @@
 
 Returns a `(label, confidence, reasoning)` triple per input. The included eval harness computes accuracy, mean confidence, and accuracy on the high-confidence subset (≥ 0.7) so you can see if confidence is calibrated.
 
+Run it in the environment where fde-starter-kit is installed (the app imports `fde_kit.backends`):
+
 ```bash
-pip install -e ".[anthropic,dev]"
-python app.py
+python app.py                     # MockChatBackend, no key needed
+export ANTHROPIC_API_KEY=sk-ant-...
+python app.py                     # real Claude; needs fde-starter-kit[anthropic]
 ```
 
 The classifier is just a single chat call; the value-add is parsing the JSON robustly, clipping confidence to [0, 1], and falling back to the first label on parse failure (instead of crashing the pipeline).

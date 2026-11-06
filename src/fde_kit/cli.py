@@ -33,4 +33,5 @@ def init_cmd(slug, dest, force):
     """
     path = copy_template(slug, dest, overwrite=force)
     click.echo(f"wrote template '{slug}' to {path}")
-    click.echo(f"next: cd {dest} && pip install -e '.[dev]' && pytest")
+    # The project imports fde_kit.backends, so it runs in this environment.
+    click.echo(f"next: cd {dest} && python app.py")
