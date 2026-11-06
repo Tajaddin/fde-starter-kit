@@ -1,6 +1,6 @@
 # fde-starter-kit
 
-> Five deploy-ready Anthropic-stack templates for Forward Deployed / Solutions Engineer demos: **chat / rag / agent / extract / classify**. Each template is a self-contained `app.py` with a swappable `ChatBackend` (Mock + Anthropic). `fde-kit init <slug> <dest>` scaffolds any of them into a fresh project. **43 tests** — scaffold and CLI tests (including running every scaffolded app), a wheel-packaging check, four backend tests and a smoke suite per template.
+> Five demo-ready Anthropic-stack templates for Forward Deployed / Solutions Engineer demos: **chat / rag / agent / extract / classify**. Each template is a single `app.py` with a swappable `ChatBackend` (Mock + Anthropic); it imports `fde_kit.backends`, so it runs in the environment where the kit is installed. `fde-kit init <slug> <dest>` scaffolds any of them into a fresh project. **43 tests** — scaffold and CLI tests (including running every scaffolded app), a wheel-packaging check, four backend tests and a smoke suite per template.
 
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Tests](https://img.shields.io/badge/tests-43%20passing-brightgreen)](#tests) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)]()
 
@@ -114,7 +114,7 @@ Every template is intentionally **minimal but correct**:
 
 **Mock-first, not production-first.** Every template is designed to be a *starting point* a customer engineer iterates on, not a finished product. There's no auth, no logging, no observability, no rate limiting in the templates themselves (those are separate concerns and live in [llm-gateway-mini](https://github.com/Tajaddin/llm-gateway-mini)).
 
-**`AnthropicChatBackend` requires the SDK.** Templates import it lazily, but `pip install '.[anthropic]'` is needed to run any template against real Claude. Without it, you get the mock.
+**`AnthropicChatBackend` requires the SDK.** Templates import it lazily, but `pip install '.[anthropic]'` is needed to run any template against real Claude. Templates choose the mock only when `ANTHROPIC_API_KEY` is unset; with the key set and the SDK missing, `AnthropicChatBackend` raises `ImportError`.
 
 **RAG is BM25, not vector search.** Deliberate: the demo runs anywhere, with no model downloads, on small corpora. For production RAG, swap the BM25 for an embedding index — the `BM25` class is dropped into one place in `ask()`.
 
