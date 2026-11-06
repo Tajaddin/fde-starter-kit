@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import os
+import shlex
+import subprocess
+import sys
 from pathlib import Path
 
 import click
@@ -33,5 +37,8 @@ def init_cmd(slug, dest, force):
     """
     path = copy_template(slug, dest, overwrite=force)
     click.echo(f"wrote template '{slug}' to {path}")
-    # The project imports fde_kit.backends, so it runs in this environment.
-    click.echo(f"next: cd {dest} && python app.py")
+    # The project imports fde_kit.backends, so it must run under this interpreter;
+    # a bare `python` misses it after `pipx install` or `uv tool install`.
+    argv = [sys.executable, "app.py"]
+    command = subprocess.list2cmdline(argv) if os.name == "nt" else shlex.join(argv)
+    click.echo(f"next: cd {dest} && {command}")

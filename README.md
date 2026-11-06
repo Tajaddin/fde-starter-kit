@@ -30,6 +30,8 @@ cd my-rag-demo
 python app.py
 ```
 
+The generated `app.py` imports `fde_kit`, so run it with the Python that has fde-starter-kit installed. `fde-kit init` prints that interpreter's full path in its `next:` line; after `pipx install` or `uv tool install`, a bare `python` will not find `fde_kit`.
+
 To run any template against the real Anthropic API:
 
 ```bash

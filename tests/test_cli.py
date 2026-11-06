@@ -18,11 +18,16 @@ def test_init_prints_a_next_step_that_runs(tmp_path, slug):
     dest = tmp_path / "demo"
     result = CliRunner().invoke(cli, ["init", slug, str(dest)])
     assert result.exit_code == 0, result.output
-    assert result.output.splitlines()[-1] == f"next: cd {dest} && python app.py"
+    hint = result.output.splitlines()[-1]
+    prefix = f"next: cd {dest} && "
+    assert hint.startswith(prefix)
+    # Bare `python` is often not the interpreter fde-kit runs in (pipx, uv tool
+    # install), so the hint must name this one, quoted for the platform shell.
+    assert sys.executable in hint
 
     env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
     run = subprocess.run(
-        [sys.executable, "app.py"], cwd=dest, env=env,
+        hint[len(prefix):], shell=True, cwd=dest, env=env,
         stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=60,
     )
     assert run.returncode == 0, run.stderr
