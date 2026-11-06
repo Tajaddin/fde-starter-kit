@@ -34,7 +34,9 @@ def test_init_prints_a_next_step_that_runs(tmp_path, slug):
     assert run.stdout.strip()
 
 
-def test_init_rejects_unknown_slug(tmp_path):
+def test_init_rejects_unknown_slug_with_a_usage_error(tmp_path):
     result = CliRunner().invoke(cli, ["init", "..", str(tmp_path / "demo")])
-    assert result.exit_code != 0
+    assert result.exit_code == 2
+    assert isinstance(result.exception, SystemExit)
+    assert "'..' is not one of" in result.output
     assert not (tmp_path / "demo").exists()

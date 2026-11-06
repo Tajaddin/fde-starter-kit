@@ -27,7 +27,7 @@ def list_cmd():
 
 
 @cli.command(name="init")
-@click.argument("slug")
+@click.argument("slug", type=click.Choice([t.slug for t in TEMPLATES]))
 @click.argument("dest")
 @click.option("--force", is_flag=True, help="overwrite existing directory")
 def init_cmd(slug, dest, force):
