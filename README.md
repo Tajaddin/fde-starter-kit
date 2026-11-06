@@ -12,7 +12,7 @@
 | **rag** | RAG over a JSON corpus | Pure-Python BM25 over a 5-doc JSON corpus, `ask(...)` returns answer + sources (no embeddings required) |
 | **agent** | ReAct-style tool-use agent | Two built-in tools (safe calculator + stub search), bounded `max_steps`, parses `TOOL:`/`ARG:`/`ANSWER:` lines |
 | **extract** | Structured data extraction | Pydantic schema → JSON → validation → **one repair retry** with the validation error attached to the prompt |
-| **classify** | Multi-label classification | LLM-as-classifier with confidence clipping + label fallback + a `evaluate(...)` harness that reports accuracy on the high-confidence subset |
+| **classify** | Multi-class (single-label) classification | LLM-as-classifier that picks one label, with confidence clipping + label fallback + an `evaluate(...)` harness that reports accuracy, mean confidence and accuracy on the high-confidence subset |
 
 Each template is **<200 lines** of `app.py`. The intent is "demo-ready in 10 minutes", not "production-perfect."
 

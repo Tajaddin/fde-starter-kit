@@ -49,10 +49,11 @@ TEMPLATES: list[TemplateSpec] = [
     ),
     TemplateSpec(
         slug="classify",
-        title="Multi-Label Classification",
+        title="Multi-Class (Single-Label) Classification",
         description=(
-            "LLM-as-classifier: returns label + confidence (clipped to [0, 1]) + reasoning. "
-            "Includes a tiny eval harness that checks whether confidence tracks accuracy."
+            "LLM-as-classifier: returns one label + confidence (clipped to [0, 1]) + reasoning. "
+            "Includes a tiny eval harness that reports accuracy, mean confidence and "
+            "accuracy on high-confidence items."
         ),
     ),
 ]

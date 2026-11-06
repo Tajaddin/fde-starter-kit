@@ -21,7 +21,7 @@ class ClassificationResult:
 
 def _system(labels: list[str]) -> str:
     return (
-        "You are a multi-label classifier. Pick the SINGLE best label from this set:\n"
+        "You are a text classifier. Pick the SINGLE best label from this set:\n"
         f"{', '.join(labels)}\n\n"
         "Respond with a JSON object: "
         '{"label": "<one of the labels>", "confidence": <0..1 float>, '
