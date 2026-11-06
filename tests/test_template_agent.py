@@ -11,7 +11,7 @@ from fde_kit import MockChatBackend
 def _load_agent():
     import sys
 
-    path = Path(__file__).resolve().parents[1] / "templates" / "agent" / "app.py"
+    path = Path(__file__).resolve().parents[1] / "src" / "fde_kit" / "templates" / "agent" / "app.py"
     spec = importlib.util.spec_from_file_location("_agent_app", path)
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod

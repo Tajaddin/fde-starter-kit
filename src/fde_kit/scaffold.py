@@ -59,12 +59,7 @@ TEMPLATES: list[TemplateSpec] = [
 
 
 def _templates_root() -> Path:
-    here = Path(__file__).resolve()
-    for parent in here.parents:
-        cand = parent / "templates"
-        if cand.is_dir() and (cand / "chat").is_dir():
-            return cand
-    raise FileNotFoundError("templates/ not found")
+    return Path(__file__).resolve().parent / "templates"
 
 
 def list_templates() -> list[TemplateSpec]:
@@ -85,5 +80,5 @@ def copy_template(slug: str, dest_dir: str | Path, *, overwrite: bool = False) -
                 f"destination {dest} is not empty; pass overwrite=True to clobber"
             )
         shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+    shutil.copytree(src, dest, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     return dest

@@ -96,13 +96,13 @@ Every template is intentionally **minimal but correct**:
 ├── src/fde_kit/
 │   ├── backends.py   # ChatBackend / MockChatBackend / AnthropicChatBackend
 │   ├── scaffold.py   # TEMPLATES list + copy_template(slug, dest)
-│   └── cli.py        # `fde-kit list` + `fde-kit init`
-├── templates/
-│   ├── chat/app.py + README.md
-│   ├── rag/app.py + corpus.json + README.md
-│   ├── agent/app.py + README.md
-│   ├── extract/app.py + README.md
-│   └── classify/app.py + README.md
+│   ├── cli.py        # `fde-kit list` + `fde-kit init`
+│   └── templates/    # shipped inside the package, so `fde-kit init` works from a wheel
+│       ├── chat/app.py + README.md
+│       ├── rag/app.py + corpus.json + README.md
+│       ├── agent/app.py + README.md
+│       ├── extract/app.py + README.md
+│       └── classify/app.py + README.md
 └── tests/                  # 29 cases across 7 files
 ```
 

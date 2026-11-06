@@ -17,7 +17,7 @@ def test_list_templates_returns_five():
 
 def test_each_template_has_required_files():
     for spec in TEMPLATES:
-        root = Path(__file__).resolve().parents[1] / "templates" / spec.slug
+        root = Path(__file__).resolve().parents[1] / "src" / "fde_kit" / "templates" / spec.slug
         assert (root / "app.py").is_file(), f"{spec.slug} missing app.py"
         assert (root / "README.md").is_file(), f"{spec.slug} missing README.md"
 

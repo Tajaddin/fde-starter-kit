@@ -6,9 +6,9 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "templates" / "chat"))
-sys.path.insert(0, str(ROOT / "templates" / "rag"))
-sys.path.insert(0, str(ROOT / "templates" / "agent"))
-sys.path.insert(0, str(ROOT / "templates" / "extract"))
-sys.path.insert(0, str(ROOT / "templates" / "classify"))
+TEMPLATES = Path(__file__).resolve().parents[1] / "src" / "fde_kit" / "templates"
+sys.path.insert(0, str(TEMPLATES / "chat"))
+sys.path.insert(0, str(TEMPLATES / "rag"))
+sys.path.insert(0, str(TEMPLATES / "agent"))
+sys.path.insert(0, str(TEMPLATES / "extract"))
+sys.path.insert(0, str(TEMPLATES / "classify"))
