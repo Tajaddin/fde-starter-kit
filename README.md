@@ -1,8 +1,8 @@
 # fde-starter-kit
 
-> Five deploy-ready Anthropic-stack templates for Forward Deployed / Solutions Engineer demos: **chat / rag / agent / extract / classify**. Each template is a self-contained `app.py` with a swappable `ChatBackend` (Mock + Anthropic). `fde-kit init <slug> <dest>` scaffolds any of them into a fresh project. **29 tests** — six scaffold tests + four backend tests + a smoke suite per template — all green in 1.3 s.
+> Five deploy-ready Anthropic-stack templates for Forward Deployed / Solutions Engineer demos: **chat / rag / agent / extract / classify**. Each template is a self-contained `app.py` with a swappable `ChatBackend` (Mock + Anthropic). `fde-kit init <slug> <dest>` scaffolds any of them into a fresh project. **43 tests** — scaffold and CLI tests (including running every scaffolded app), a wheel-packaging check, four backend tests and a smoke suite per template.
 
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Tests](https://img.shields.io/badge/tests-29%20passing-brightgreen)](#tests) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)]()
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Tests](https://img.shields.io/badge/tests-43%20passing-brightgreen)](#tests) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)]()
 
 ## The five templates
 
@@ -62,7 +62,9 @@ pytest -v
 ```
 
 ```
-tests/test_scaffold.py            6 passed   list, copy, unknown-slug, refuse-nonempty, force-overwrite
+tests/test_scaffold.py           13 passed   list, copy, unknown-slug, path-traversal slugs, refuse-nonempty, force-overwrite
+tests/test_cli.py                 6 passed   `fde-kit init` for every template, then runs the printed `python app.py`
+tests/test_packaging.py           1 passed   the built wheel contains every template
 tests/test_backends.py            4 passed   default responder, call inspection, custom responder, token estimates
 tests/test_template_chat.py       3 passed   run_repl, history append, reset
 tests/test_template_rag.py        3 passed   BM25 retrieval, ask() returns sources, no-match path
@@ -70,7 +72,7 @@ tests/test_template_agent.py      5 passed   calc safety, tool call, unknown too
 tests/test_template_extract.py    3 passed   happy path, repair retry happens, raises after two failures
 tests/test_template_classify.py   5 passed   parse, clip, parse-failure fallback, unknown-label fallback, eval metrics
 ─────────────────────────────────────────────
-29 passed in 1.30s
+43 passed
 ```
 
 Two tests worth pointing out:
@@ -103,7 +105,7 @@ Every template is intentionally **minimal but correct**:
 │       ├── agent/app.py + README.md
 │       ├── extract/app.py + README.md
 │       └── classify/app.py + README.md
-└── tests/                  # 29 cases across 7 files
+└── tests/                  # 43 cases across 9 files
 ```
 
 ## Limitations
