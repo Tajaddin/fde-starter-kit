@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "fde-starter-kit"
 version = "0.1.0"
-description = "Five deploy-ready Anthropic-stack starter templates for Forward Deployed / Solutions Engineering demos: chat, RAG, agent, extract, classify."
+description = "Five demo-ready Anthropic-stack starter templates for Forward Deployed / Solutions Engineering demos: chat, RAG, agent, extract, classify."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
@@ -18,13 +18,16 @@ dependencies = [
 
 [project.optional-dependencies]
 anthropic = ["anthropic>=0.39"]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "setuptools>=70.1"]
 
 [project.scripts]
 fde-kit = "fde_kit.cli:cli"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+fde_kit = ["templates/*/*.py", "templates/*/*.md", "templates/*/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

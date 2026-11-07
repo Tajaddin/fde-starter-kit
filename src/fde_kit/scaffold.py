@@ -19,8 +19,8 @@ TEMPLATES: list[TemplateSpec] = [
         slug="chat",
         title="Conversational Chat",
         description=(
-            "Multi-turn chat agent with system prompt + conversation history. "
-            "FastAPI endpoint, CLI client, swappable backend."
+            "Multi-turn chat with system prompt + conversation history. "
+            "Terminal REPL, swappable backend."
         ),
     ),
     TemplateSpec(
@@ -49,22 +49,18 @@ TEMPLATES: list[TemplateSpec] = [
     ),
     TemplateSpec(
         slug="classify",
-        title="Multi-Label Classification",
+        title="Multi-Class (Single-Label) Classification",
         description=(
-            "LLM-as-classifier with calibration: returns label + confidence + reasoning. "
-            "Includes a tiny eval harness."
+            "LLM-as-classifier: returns one label + confidence (clipped to [0, 1]) + reasoning. "
+            "Includes a tiny eval harness that reports accuracy, mean confidence and "
+            "accuracy on high-confidence items."
         ),
     ),
 ]
 
 
 def _templates_root() -> Path:
-    here = Path(__file__).resolve()
-    for parent in here.parents:
-        cand = parent / "templates"
-        if cand.is_dir() and (cand / "chat").is_dir():
-            return cand
-    raise FileNotFoundError("templates/ not found")
+    return Path(__file__).resolve().parent / "templates"
 
 
 def list_templates() -> list[TemplateSpec]:
@@ -72,10 +68,12 @@ def list_templates() -> list[TemplateSpec]:
 
 
 def copy_template(slug: str, dest_dir: str | Path, *, overwrite: bool = False) -> Path:
-    src = _templates_root() / slug
-    if not src.is_dir():
+    # Only catalog slugs: a slug is joined onto a path, so "..", "a/../b" or an
+    # absolute path would otherwise copy an arbitrary directory.
+    if slug not in {t.slug for t in TEMPLATES}:
         valid = ", ".join(t.slug for t in TEMPLATES)
         raise ValueError(f"unknown template {slug!r}; expected one of: {valid}")
+    src = _templates_root() / slug
     dest = Path(dest_dir)
     if dest.exists() and any(dest.iterdir()):
         if not overwrite:
@@ -83,5 +81,5 @@ def copy_template(slug: str, dest_dir: str | Path, *, overwrite: bool = False) -
                 f"destination {dest} is not empty; pass overwrite=True to clobber"
             )
         shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+    shutil.copytree(src, dest, ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     return dest

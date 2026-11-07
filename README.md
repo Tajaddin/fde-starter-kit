@@ -1,8 +1,8 @@
 # fde-starter-kit
 
-> Five deploy-ready Anthropic-stack templates for Forward Deployed / Solutions Engineer demos: **chat / rag / agent / extract / classify**. Each template is a self-contained `app.py` with a swappable `ChatBackend` (Mock + Anthropic). `fde-kit init <slug> <dest>` scaffolds any of them into a fresh project. **29 tests** — six scaffold tests + four backend tests + a smoke suite per template — all green in 1.3 s.
+> Five demo-ready Anthropic-stack templates for Forward Deployed / Solutions Engineer demos: **chat / rag / agent / extract / classify**. Each template is a single `app.py` with a swappable `ChatBackend` (Mock + Anthropic); it imports `fde_kit.backends`, so it runs in the environment where the kit is installed. `fde-kit init <slug> <dest>` scaffolds any of them into a fresh project. **43 tests** — scaffold and CLI tests (including running every scaffolded app), a wheel-packaging check, four backend tests and a smoke suite per template.
 
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Tests](https://img.shields.io/badge/tests-29%20passing-brightgreen)](#tests) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)]()
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Tests](https://img.shields.io/badge/tests-43%20passing-brightgreen)](#tests) [![Python](https://img.shields.io/badge/python-3.10%2B-blue)]()
 
 ## The five templates
 
@@ -12,7 +12,7 @@
 | **rag** | RAG over a JSON corpus | Pure-Python BM25 over a 5-doc JSON corpus, `ask(...)` returns answer + sources (no embeddings required) |
 | **agent** | ReAct-style tool-use agent | Two built-in tools (safe calculator + stub search), bounded `max_steps`, parses `TOOL:`/`ARG:`/`ANSWER:` lines |
 | **extract** | Structured data extraction | Pydantic schema → JSON → validation → **one repair retry** with the validation error attached to the prompt |
-| **classify** | Multi-label classification | LLM-as-classifier with confidence clipping + label fallback + a `evaluate(...)` harness that reports accuracy on the high-confidence subset |
+| **classify** | Multi-class (single-label) classification | LLM-as-classifier that picks one label, with confidence clipping + label fallback + an `evaluate(...)` harness that reports accuracy, mean confidence and accuracy on the high-confidence subset |
 
 Each template is **<200 lines** of `app.py`. The intent is "demo-ready in 10 minutes", not "production-perfect."
 
@@ -29,6 +29,8 @@ fde-kit init rag ./my-rag-demo
 cd my-rag-demo
 python app.py
 ```
+
+The generated `app.py` imports `fde_kit`, so run it with the Python that has fde-starter-kit installed. `fde-kit init` prints that interpreter's full path in its `next:` line; after `pipx install` or `uv tool install`, a bare `python` will not find `fde_kit`.
 
 To run any template against the real Anthropic API:
 
@@ -62,7 +64,9 @@ pytest -v
 ```
 
 ```
-tests/test_scaffold.py            6 passed   list, copy, unknown-slug, refuse-nonempty, force-overwrite
+tests/test_scaffold.py           13 passed   list, copy, unknown-slug, path-traversal slugs, refuse-nonempty, force-overwrite
+tests/test_cli.py                 6 passed   `fde-kit init` for every template, then runs the printed next step; unknown slug is a usage error
+tests/test_packaging.py           1 passed   the built wheel contains every template
 tests/test_backends.py            4 passed   default responder, call inspection, custom responder, token estimates
 tests/test_template_chat.py       3 passed   run_repl, history append, reset
 tests/test_template_rag.py        3 passed   BM25 retrieval, ask() returns sources, no-match path
@@ -70,7 +74,7 @@ tests/test_template_agent.py      5 passed   calc safety, tool call, unknown too
 tests/test_template_extract.py    3 passed   happy path, repair retry happens, raises after two failures
 tests/test_template_classify.py   5 passed   parse, clip, parse-failure fallback, unknown-label fallback, eval metrics
 ─────────────────────────────────────────────
-29 passed in 1.30s
+43 passed
 ```
 
 Two tests worth pointing out:
@@ -96,21 +100,21 @@ Every template is intentionally **minimal but correct**:
 ├── src/fde_kit/
 │   ├── backends.py   # ChatBackend / MockChatBackend / AnthropicChatBackend
 │   ├── scaffold.py   # TEMPLATES list + copy_template(slug, dest)
-│   └── cli.py        # `fde-kit list` + `fde-kit init`
-├── templates/
-│   ├── chat/app.py + README.md
-│   ├── rag/app.py + corpus.json + README.md
-│   ├── agent/app.py + README.md
-│   ├── extract/app.py + README.md
-│   └── classify/app.py + README.md
-└── tests/                  # 29 cases across 7 files
+│   ├── cli.py        # `fde-kit list` + `fde-kit init`
+│   └── templates/    # shipped inside the package, so `fde-kit init` works from a wheel
+│       ├── chat/app.py + README.md
+│       ├── rag/app.py + corpus.json + README.md
+│       ├── agent/app.py + README.md
+│       ├── extract/app.py + README.md
+│       └── classify/app.py + README.md
+└── tests/                  # 43 cases across 9 files
 ```
 
 ## Limitations
 
 **Mock-first, not production-first.** Every template is designed to be a *starting point* a customer engineer iterates on, not a finished product. There's no auth, no logging, no observability, no rate limiting in the templates themselves (those are separate concerns and live in [llm-gateway-mini](https://github.com/Tajaddin/llm-gateway-mini)).
 
-**`AnthropicChatBackend` requires the SDK.** Templates import it lazily, but `pip install '.[anthropic]'` is needed to run any template against real Claude. Without it, you get the mock.
+**`AnthropicChatBackend` requires the SDK.** Templates import it lazily, but `pip install '.[anthropic]'` is needed to run any template against real Claude. Templates choose the mock only when `ANTHROPIC_API_KEY` is unset; with the key set and the SDK missing, `AnthropicChatBackend` raises `ImportError`.
 
 **RAG is BM25, not vector search.** Deliberate: the demo runs anywhere, with no model downloads, on small corpora. For production RAG, swap the BM25 for an embedding index — the `BM25` class is dropped into one place in `ask()`.
 

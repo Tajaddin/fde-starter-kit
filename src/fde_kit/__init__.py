@@ -1,4 +1,4 @@
-"""fde-starter-kit — five deploy-ready Anthropic-stack templates.
+"""fde-starter-kit — five demo-ready Anthropic-stack templates.
 
 Exports:
 
